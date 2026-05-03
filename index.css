@@ -162,6 +162,30 @@ button {
 }
 
 /* Game Screen */
+.game-header-top {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 10px;
+}
+.quit-btn {
+    width: auto;
+    padding: 8px 16px;
+    font-size: 1rem;
+    font-weight: 800;
+    margin-bottom: 0;
+    background: #ef4444;
+    color: white;
+    border: 3px solid var(--panel-border);
+    border-radius: 12px;
+    box-shadow: 0 4px 0 #991b1b, 0 4px 0 3px var(--panel-border);
+    cursor: pointer;
+}
+.quit-btn:active {
+    transform: translateY(4px);
+    box-shadow: 0 0 0 #991b1b, 0 0 0 3px var(--panel-border);
+}
+
 .game-header {
     display: flex;
     justify-content: space-between;
@@ -181,6 +205,7 @@ button {
     font-weight: 900;
     box-shadow: 0 4px 0 var(--primary-shadow), 0 4px 0 4px var(--panel-border);
 }
+.lives-hud { background: #f43f5e; color: white; box-shadow: 0 4px 0 #be123c, 0 4px 0 4px var(--panel-border); }
 .score-hud { background: var(--accent); color: var(--text-main); box-shadow: 0 4px 0 var(--accent-shadow), 0 4px 0 4px var(--panel-border); }
 .hud-icon { font-size: 1.5rem; }
 .hud-text { font-family: 'Outfit', sans-serif; font-size: 1rem; }

@@ -2,12 +2,10 @@
 const GAS_API_URL = "https://script.google.com/macros/s/AKfycbyno-Otdjr5xQnC2t3ZWZhNJAJPA3WeJLM6K52cKzJ2XuFjzL1aBHydSr29rN2PsVR5mQ/exec";
 const APP_SHEET_NAME = "taiseki"; // 各アプリごとに記録するシートを分けます
 
-// --- State ---
 let gameState = {
     playerName: "",
     score: 0,
-    timeLeft: 60,
-    timerId: null,
+    lives: 3,
     currentProblem: null,
     userInput: "",
     isTransitioning: false
@@ -24,7 +22,7 @@ const screens = {
 const dom = {
     playerNameInput: document.getElementById('player-name'),
     topicNameDisplay: document.getElementById('topic-name'),
-    timeLeftDisplay: document.getElementById('time-left'),
+    livesLeftDisplay: document.getElementById('lives-left'),
     currentScoreDisplay: document.getElementById('current-score'),
     questionText: document.getElementById('question-text'),
     userInputBox: document.getElementById('user-input'),
@@ -49,6 +47,7 @@ function init() {
     document.getElementById('btn-retry').addEventListener('click', () => switchScreen('start'));
     document.getElementById('btn-result-ranking').addEventListener('click', showRanking);
     document.getElementById('btn-back-home').addEventListener('click', () => switchScreen('start'));
+    document.getElementById('btn-save-quit').addEventListener('click', endGame);
 
     // Numpad Handlers
     document.querySelectorAll('.num-key').forEach(btn => {
@@ -92,15 +91,14 @@ function startGame() {
     gameState = {
         playerName: name,
         score: 0,
-        timeLeft: 60,
-        timerId: null,
+        lives: 3,
         currentProblem: null,
         userInput: "",
         isTransitioning: false
     };
     
     dom.currentScoreDisplay.textContent = gameState.score;
-    dom.timeLeftDisplay.textContent = gameState.timeLeft;
+    updateLivesDisplay();
     
     nextProblem();
     switchScreen('game');
@@ -108,15 +106,10 @@ function startGame() {
         resizeCanvas();
         clearCanvas();
     }, 10);
+}
 
-    // Start Timer
-    gameState.timerId = setInterval(() => {
-        gameState.timeLeft--;
-        dom.timeLeftDisplay.textContent = gameState.timeLeft;
-        if(gameState.timeLeft <= 0) {
-            endGame();
-        }
-    }, 1000);
+function updateLivesDisplay() {
+    dom.livesLeftDisplay.textContent = gameState.lives;
 }
 
 function nextProblem() {
@@ -251,13 +244,21 @@ function submitAnswer() {
         }, 250); // slight delay to show green color
     } else {
         dom.answerBox.classList.add('wrong');
-        gameState.userInput = "";
-        updateInputDisplay();
+        gameState.lives -= 1;
+        updateLivesDisplay();
+        
+        if (gameState.lives <= 0) {
+            setTimeout(() => {
+                endGame();
+            }, 300);
+        } else {
+            gameState.userInput = "";
+            updateInputDisplay();
+        }
     }
 }
 
 function endGame() {
-    clearInterval(gameState.timerId);
     dom.finalScoreValue.textContent = gameState.score;
     switchScreen('result');
     submitScoreToGAS();
