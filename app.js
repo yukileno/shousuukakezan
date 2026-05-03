@@ -1,6 +1,6 @@
 // --- Configuration ---
 const GAS_API_URL = "https://script.google.com/macros/s/AKfycbyno-Otdjr5xQnC2t3ZWZhNJAJPA3WeJLM6K52cKzJ2XuFjzL1aBHydSr29rN2PsVR5mQ/exec";
-const APP_SHEET_NAME = "taiseki"; // 各アプリごとに記録するシートを分けます
+const APP_SHEET_NAME = "score"; // 各アプリごとに記録するシートを分けます
 
 let gameState = {
     playerName: "",
