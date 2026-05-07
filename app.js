@@ -74,9 +74,6 @@ function init() {
     });
 
     initCanvas();
-    
-    // Load the Top Players HUD
-    loadTopPlayersHUD();
 }
 
 // --- Screen Management ---
@@ -303,56 +300,12 @@ async function submitScoreToGAS() {
             }
         });
         dom.savingStatus.textContent = "送信完了！";
-        
-        // Refresh HUD after a short delay to allow GAS to process
-        setTimeout(loadTopPlayersHUD, 1500);
     } catch(e) {
         console.error(e);
         dom.savingStatus.textContent = "送信エラーまたは通信エラー"; 
     }
 }
 
-async function loadTopPlayersHUD() {
-    const listContainer = document.getElementById('top-players-list');
-    if (!listContainer) return;
-    
-    if(GAS_API_URL === "YOUR_GAS_ENDPOINT_URL_HERE") {
-        listContainer.innerHTML = '<div style="font-size: 0.8rem; text-align: center;">Not Configured</div>';
-        return;
-    }
-
-    try {
-        const res = await fetch(`${GAS_API_URL}?action=getTop&sheetName=${APP_SHEET_NAME}&topic=${encodeURIComponent(window.ProblemGenerator.topicName)}&t=${Date.now()}`);
-        const data = await res.json();
-        
-        listContainer.innerHTML = '';
-        if(data.ranking && data.ranking.length > 0) {
-            // Display top 10
-            const top10 = data.ranking.slice(0, 10);
-            top10.forEach((r, idx) => {
-                const item = document.createElement('div');
-                item.className = 'top-player-item';
-                
-                let rankIcon = `${idx + 1}`;
-                if(idx === 0) rankIcon = '👑';
-                else if(idx === 1) rankIcon = '🥈';
-                else if(idx === 2) rankIcon = '🥉';
-
-                item.innerHTML = `
-                    <div class="top-player-rank">${rankIcon}</div>
-                    <div class="top-player-name">${r.name}</div>
-                    <div class="top-player-score">${r.score}</div>
-                `;
-                listContainer.appendChild(item);
-            });
-        } else {
-            listContainer.innerHTML = '<div style="font-size: 0.8rem; text-align: center;">No data yet</div>';
-        }
-    } catch(e) {
-        console.error("Error loading top players HUD:", e);
-        listContainer.innerHTML = '<div style="font-size: 0.8rem; text-align: center;">Error</div>';
-    }
-}
 
 async function showRanking() {
     switchScreen('ranking');
